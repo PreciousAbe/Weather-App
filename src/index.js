@@ -1,4 +1,85 @@
+let temperatureCelcius;
+
 (function () {
+
+  function getDay(timestamp) {
+    let date = new Date(timestamp * 1000);
+    let day = date.getDay();
+    let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+    return days[day];
+  }
+
+  function getCurrentWeather(city = 'Lagos') {
+    let apiKey = '5f472b7acba333cd8a035ea85a0d4d4c';
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+    const icon = document.getElementById('weatherIcon');
+    const weatherDesc = document.getElementById("weatherDesc");
+    const wind = document.getElementById("wind");
+    const humidity = document.getElementById("humidity");
+    // const precipitation = document.getElementById("precipitation");
+    const temp = document.getElementById("temp");
+
+    fetch(url, {
+      method: 'GET'
+    })
+      .then(response => response.json())
+      .then(data => {
+        getDailyWeather(data.coord);
+        const weather = data.weather[0];
+        const mainWeather = data.main;
+
+        let iconUrl = `http://openweathermap.org/img/wn/${weather.icon}@2x.png`;
+        icon.src = iconUrl;
+        weatherDesc.innerText = weather.main;
+        wind.innerText = data.wind.speed;
+        humidity.innerText = mainWeather.humidity;
+        // precipitation.innerText = 0;
+        temp.innerText = Math.round(mainWeather.temp);
+        temperatureCelcius = Math.round(mainWeather.temp);
+
+      })
+      .catch(err => console.error(err));
+  }
+
+  function getDailyWeather(coord) {
+
+    let apiKey = '5f472b7acba333cd8a035ea85a0d4d4c';
+    let url = `https://api.openweathermap.org/data/2.5/onecall?lat=${coord.lat}&lon=${coord.lon}&appid=${apiKey}&units=metric`;
+    const container = document.getElementById('dailyHolder');
+
+    fetch(url, {
+      method: 'GET'
+    })
+      .then(response => response.json())
+      .then(data => {
+        const daily = data.daily;
+
+        let div = `<div class="row justify-content-between">`;
+        daily.forEach((day, i) => {
+          if (i < 7) {
+            let celcius = Math.round(day.temp.max);
+            let feih = Math.round((celcius * 1.8) + 32);
+            div = div + `<div class="col text-center">
+              <p class="m-0">${getDay(day.dt)}</p>
+              <p class="m-0">
+                <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png" alt="partly_cloudy" width="100">
+              </p>
+              <p class="m-0"><span class="text-dark text-bold">${celcius}°C</span> <small>${feih}°F</small></p>
+            </div>`;
+          }
+        })
+
+        div = div + `</div>`;
+
+        container.innerHTML = div;
+      })
+      .catch(err => console.error(err));
+  }
+
+  getCurrentWeather('Lagos');
+
   const timeElem = document.getElementById("time");
 
   const days = [
@@ -77,41 +158,122 @@ const city = document.getElementById("city");
 let countryName;
 
 function getCity() {
-  if (weather[country.value.toLowerCase()] !== undefined) {
-    city.innerText = country.value
-      .toLowerCase()
-      .replace(/(^|\s)\S/g, (L) => L.toUpperCase());
+  // if (weather[country.value.toLowerCase()] !== undefined) {
+  //   city.innerText = country.value
+  //     .toLowerCase()
+  //     .replace(/(^|\s)\S/g, (L) => L.toUpperCase());
 
-    countryName = country.value.toLowerCase();
-    country.value = "";
-    setCelcius();
-  } else {
-    alert(
-      `Sorry, we don't know the weather for this city, try
-      going to https://google.com/search?q=weather+${country.value}`
-    );
-    country.value = "";
-  }
+  //   countryName = country.value.toLowerCase();
+  //   // country.value = "";
+  //   setCelcius();
+  // } else {
+  //   alert(
+  //     `Sorry, we don't know the weather for this city, try
+  //     going to https://google.com/search?q=weather+${country.value}`
+  //   );
+  //   country.value = "";
+  // }
+
+  getCurrentWeather(country.value);
+
+  city.innerText = country.value
+    .toLowerCase()
+    .replace(/(^|\s)\S/g, (L) => L.toUpperCase());
 }
 
 document.getElementById("button").addEventListener("click", getCity);
 
 function setCelcius() {
   const temp = document.querySelector("#temp");
-  if (weather[countryName] !== undefined) {
-    temp.innerText = Math.round(weather[countryName].temp);
-  } else {
-    console.log("celsius failed");
-  }
+  temp.innerText = Math.round(temperatureCelcius);
 }
 
 function setFeih() {
   const temp = document.querySelector("#temp");
-  if (weather[countryName] !== undefined) {
-    temp.innerText = 66;
-  } else {
-    console.log("Feih failed");
-  }
+  temp.innerText = Math.round((temperatureCelcius * 1.8) + 32);;
+}
+
+function getDay(timestamp) {
+  let date = new Date(timestamp * 1000);
+  let day = date.getDay();
+  let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+  return days[day];
+}
+
+function getCurrentWeather(city = 'Lagos') {
+  let apiKey = '5f472b7acba333cd8a035ea85a0d4d4c';
+  let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+  const icon = document.getElementById('weatherIcon');
+  const weatherDesc = document.getElementById("weatherDesc");
+  const wind = document.getElementById("wind");
+  const humidity = document.getElementById("humidity");
+  const precipitation = document.getElementById("precipitation");
+  const temp = document.getElementById("temp");
+  const cityName = document.getElementById("city");
+
+
+  fetch(url, {
+    method: 'GET'
+  })
+    .then(response => response.json())
+    .then(data => {
+      getDailyWeather(data.coord);
+      const weather = data.weather[0];
+      const mainWeather = data.main;
+
+      let iconUrl = `http://openweathermap.org/img/wn/${weather.icon}@2x.png`;
+      icon.src = iconUrl;
+      weatherDesc.innerText = weather.main;
+      wind.innerText = data.wind.speed + 'km/h';
+      humidity.innerText = mainWeather.humidity + '%';
+      // precipitation.innerText = 0;
+      temp.innerText = Math.round(mainWeather.temp);
+      cityName.innerText = data.name;
+      temperatureCelcius = Math.round(mainWeather.temp);
+
+    })
+    .catch(err => console.error(err));
+}
+
+function getDailyWeather(coord) {
+  let apiKey = '5f472b7acba333cd8a035ea85a0d4d4c';
+  let url = `https://api.openweathermap.org/data/2.5/onecall?lat=${coord.lat}&lon=${coord.lon}&appid=${apiKey}&units=metric`;
+  const container = document.getElementById('dailyHolder');
+
+  fetch(url, {
+    method: 'GET'
+  })
+    .then(response => response.json())
+    .then(data => {
+      const daily = data.daily;
+
+      let div = `<div class="row justify-content-between">`;
+      daily.forEach((day, i) => {
+        if (i < 7) {
+          let celcius = Math.round(day.temp.max);
+          let feih = Math.round((celcius * 1.8) + 32);
+          div = div + `<div class="col text-center">
+              <p class="m-0">${getDay(day.dt)}</p>
+              <p class="m-0">
+                <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png" alt="partly_cloudy" width="100">
+              </p>
+              <p class="m-0">
+              <span class='text-dark text-bold'>${celcius}°C</span> 
+              <small>${feih}°F</small>
+              </p>
+            </div>`;
+        }
+      })
+
+      div = div + `</div>`;
+
+      container.innerHTML = div;
+
+
+    })
+    .catch(err => console.error(err));
 }
 
 document.getElementById("celcius").addEventListener("click", setCelcius);
