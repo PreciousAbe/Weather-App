@@ -62,5 +62,14 @@ li {
  border-left: none !important;
 }
 .link {
-  margin-top: 10px;
+  font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+    cursor: pointer;
+    margin: 0 auto;
+    padding-top: 5rem;
+;
+}
+.link a {
+  color: #885df1;
 }
