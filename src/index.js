@@ -64,7 +64,7 @@ let temperatureCelcius;
             div = div + `<div class="col text-center">
               <p class="m-0">${getDay(day.dt)}</p>
               <p class="m-0">
-                <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png" alt="partly_cloudy" width="100">
+                <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png" width="100">
               </p>
               <p class="m-0"><span class="text-dark text-bold">${celcius}°C</span> <small>${feih}°F</small></p>
             </div>`;
@@ -257,7 +257,7 @@ function getDailyWeather(coord) {
           div = div + `<div class="col text-center">
               <p class="m-0">${getDay(day.dt)}</p>
               <p class="m-0">
-                <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png" alt="partly_cloudy" width="100">
+                <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png" width="100">
               </p>
               <p class="m-0">
               <span class='text-dark text-bold'>${celcius}°C</span> 
