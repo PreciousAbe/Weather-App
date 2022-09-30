@@ -278,3 +278,5 @@ function getDailyWeather(coord) {
 
 document.getElementById("celcius").addEventListener("click", setCelcius);
 document.getElementById("feih").addEventListener("click", setFeih);
+
+search ("Lagos");
